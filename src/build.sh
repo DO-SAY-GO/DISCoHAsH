@@ -2,4 +2,5 @@
 
 rm -rf bin
 mkdir bin
-g++ -march=native -fopenmp -Ofast *.cpp -o bin/bebbsum
+#-fopenmp unsupported
+g++ -g -march=native -Ofast *.cpp -o bin/bebbsum
