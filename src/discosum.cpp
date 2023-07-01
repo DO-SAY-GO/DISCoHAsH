@@ -51,7 +51,7 @@ int main(int argc, char **argv) {
   }
 
   std::vector<uint64_t> hash(4);
-  BEBB4185_64(buffer.data(), buffer.size(), 0, hash.data());
+  DISCoHAsH_64(buffer.data(), buffer.size(), 0, hash.data());
 
   for (int i = 0; i < 4; ++i) {
     printf("%016" PRIx64, hash[i]);
