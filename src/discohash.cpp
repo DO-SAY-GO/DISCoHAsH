@@ -1,7 +1,12 @@
-// also known as BEBB4185
-// Copyright 2020 - 2023 Cris Stringfellow & Dosyago
+// DISCoHAsH v2 - also known as BEBB4185
 // https://github.com/dosyago/discohash
-// Licensed under MIT
+//   Copyright 2023 Cris Stringfellow & The Dosyago Corporation
+//
+//   Licensed under the Apache License, Version 2.0 (the "License");
+//   you may not use this file except in compliance with the License.
+//   You may obtain a copy of the License at
+//
+//       http://www.apache.org/licenses/LICENSE-2.0
 #include <cstdio>
 #include <inttypes.h>
 #include <cstring>
@@ -16,7 +21,7 @@ constexpr int STATE64M = STATE64-1;
 constexpr int HSTATE64M = HSTATE64-1;
 alignas(uint64_t) uint8_t disco_buf[STATE] = {0};
 constexpr uint64_t P = 0xFFFFFFFFFFFFFFFF - 58;
-constexpr uint64_t Q = 13166748625691186689U;
+constexpr uint64_t Q = UINT64_C(13166748625691186689);
 alignas(uint64_t) uint8_t *ds8 = (uint8_t *)disco_buf;
 uint64_t *ds = (uint64_t *)disco_buf;
 
@@ -54,7 +59,7 @@ uint64_t *ds = (uint64_t *)disco_buf;
   {
     int index = 0;
     int sindex = 0;
-    uint64_t counter = 0xfaccadaccad09997;
+    uint64_t counter = UINT64_C(0xfaccadaccad09997);
     uint8_t counter8 = 137;
 
     for( int Len = len >> 3; index < Len; index++) {
@@ -104,29 +109,16 @@ uint64_t *ds = (uint64_t *)disco_buf;
     alignas(uint64_t) uint8_t* tempBuf = new uint8_t[tempLen];
     const uint8_t *key8Arr = (uint8_t *)key;
 
-    alignas(uint64_t) const uint8_t seedbuf[16] = {0};
-    const uint8_t *seed8Arr = (uint8_t *)seedbuf;
-    const uint64_t *seed64Arr = (uint64_t *)seedbuf;
-    uint32_t *seed32Arr = (uint32_t *)seedbuf;
-
-    // the cali number from the Matrix (1999)
-    seed32Arr[0] = 0xc5550690;
-    seed32Arr[0] -= seed;
-    seed32Arr[1] = 1 + seed;
-    seed32Arr[2] = ~(1 - seed);
-    seed32Arr[3] = (1+seed) * 0xf00dacca;
-
     // nothing up my sleeve
-    ds[0] = 0x123456789abcdef0;
-    ds[1] = 0x0fedcba987654321;
-    ds[2] = 0xaccadacca80081e5;
-    ds[3] = 0xf00baaf00f00baaa;
+    ds[0] = UINT64_C(0x123456789abcdef0) + seed;
+    ds[1] = UINT64_C(0x0fedcba987654321) - seed;
+    ds[2] = UINT64_C(0xaccadacca80081e5) ^ seed;
+    ds[3] = UINT64_C(0xf00baaf00f00baaa) - seed;
 
     memcpy(tempBuf, key, len);
     uint64_t* temp64 = reinterpret_cast<uint64_t*>(tempBuf);
 
     round( temp64, key8Arr, len );
-    round( seed64Arr, seed8Arr, 16 );
     round( ds, ds8, STATE );
 
     // 256-bit internal state 256-bit output
